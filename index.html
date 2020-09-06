@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Shop</title>
+    <!-- CSS only -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <!-- JS, Popper.js, and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script type="text/javascript" src="//code.jquery.com/jquery-2.1.3.min.js"></script>
+</head>
+
+<body>
+    <!-- Navbar here -->
+    <div id="app">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+            <a class="navbar-brand" href="#">Shop Name</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Cart ({{cart.length}})
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a v-for="item in cart" class="dropdown-item" href="#">{{item.productname}}({{item.itemcount}}) : {{item.price}} rs</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#">Total Cost : {{total}} rs</a>
+                        </div>
+                    </li>
+                </ul>
+                <form class="form-inline my-2 my-lg-0">
+                    <input v-model="query" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                </form>
+            </div>
+        </nav>
+        <!-- Item List  -->
+        <div class="h-100 row align-items-center">
+            <div v-for="product in products" class="card" style="width: 18rem;">
+                <div v-show="matchswith(product.productname )">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQO-yeM-pdFsW1Ppzc5B5JZgxHlZC5KM4uJYw&usqp=CAU" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">{{product.productname}}</h5>
+                        <p class="card-text">{{product.Description}}</p>
+                        <button v-on:click="additem(product.price , product.productname)" class="btn btn-primary">Buy [ {{getcartvalue(product.productname)}} ]</button> <br></br>
+                        <a href="#" class="btn btn-primary">{{product.price}}</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <style>
+        .cards {
+        margin: 0 auto;
+        /* Added */
+        float: none;
+        /* Added */
+        margin-bottom: 10px;
+        /* Added */
+    }
+    </style>
+    <script>
+    var app = new Vue({
+        el: '#app',
+        data: {
+            message: 'Vue is Running',
+            products: [
+                { productname: 'Phone', price: 59, Description: "nice product" },
+                { productname: 'LAptop', price: 69, Description: "better product" },
+                { productname: 'Apple', price: 45, Description: "worst product" },
+                { productname: 'bed', price: 69, Description: "cool product" },
+                { productname: 'T-shirt', price: 88, Description: "bad product" },
+                { productname: 'Bedsheet', price: 588, Description: "awesome product" },
+                { productname: 'Bike', price: 45, Description: "never seen product" },
+                { productname: 'Pencil', price: 20, Description: "fake product" }
+
+            ],
+            cart: [],
+            total: 0,
+            query: ""
+
+
+        },
+        methods: {
+            additem: function(val, name) {
+                index = this.cart.findIndex(f => f.productname === name)
+                if (index == -1) {
+                    this.total = this.total + val;
+                    this.cart.push({ productname: name, price: val, itemcount: 1 })
+                } else {
+                    this.total = this.total + val;
+                    Vue.set(this.cart, index, { productname: name, price: this.cart[index].price + val, itemcount: this.cart[index].itemcount + 1 })
+                }
+
+            },
+
+            getcartvalue: function(name) {
+
+                index = this.cart.findIndex(f => f.productname === name)
+                if (index == -1) {
+                    return 0;
+                } else {
+                    return this.cart[index].itemcount;
+                }
+
+            },
+
+            matchswith: function(name) {
+                if (this.query == "")
+                    return true;
+                else {
+                    return name.toLowerCase().includes(this.query.toLowerCase());
+                }
+            }
+        }
+    })
+    </script>
+    <script type="text/javascript">
+    $(window).scroll(function(e) {
+
+        // add/remove class to navbar when scrolling to hide/show
+        var scroll = $(window).scrollTop();
+        if (scroll >= 150) {
+            $('.navbar').addClass("navbar-hide");
+        } else {
+            $('.navbar').removeClass("navbar-hide");
+        }
+
+    });
+    </script>
+</body>
+
+</html>
